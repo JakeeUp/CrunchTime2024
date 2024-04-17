@@ -2,6 +2,7 @@
 
 #pragma once
 #include "CoreMinimal.h"
+#include "OnlineSessionSettings.h"
 #include "Blueprint/UserWidget.h"
 #include "CMainMenu.generated.h"
 
@@ -15,14 +16,24 @@ class UCMainMenu : public UUserWidget
 public:
 	virtual void NativeConstruct() override;
 private:
+
+	UPROPERTY(meta = (BindWidget))
+	class UEditableText* SessionNameText;
+
 	UPROPERTY(meta = (BindWidget))
 	class UButton* LoginBtn;
 
 	UPROPERTY(meta = (BindWidget))
 	class UButton* CreateSessionBtn;
+
+	UPROPERTY(meta = (BindWidget))
+	class UScrollBox* SessionEntryList;
 	
 	UPROPERTY(meta = (BindWidget))
 	class UButton* FindSessionBtn;
+
+	UFUNCTION()
+	void SessionNameTextChanged(const FText& NewText);
 
 	UFUNCTION()
 	void LoginBtnClicked();
@@ -32,6 +43,13 @@ private:
 
 	UFUNCTION()
 	void FindSessionBtnClicked();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Session")
+	TSubclassOf<class USessionEntry> SessionEntryClass;
+
+	void LoadSessionWithIndex(int index);
+
+	void SessionSearchCompleted(const TArray<FOnlineSessionSearchResult>& SearchResults);
 	
 	class UCGameInstance* CGameInst;
 };
